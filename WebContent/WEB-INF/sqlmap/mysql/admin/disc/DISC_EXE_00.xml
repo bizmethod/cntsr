@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DISC_EXE_00">
+    
+     <!-- 임원현황 리스트 -->
+    <select id="getExeList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT SEQ_EXECUTIVE_CONT,REG_DT,REG_ID,UPD_DT,UPD_ID,RECODE_ST,NOTE,SORT_NO,EXECUTIVE_NM,POSITION_TYP,START_TERM,END_TERM,CAREER
+		,(SELECT CODE_NM FROM C_CODE WHERE CODESET='POSI' AND CODE = EC.POSITION_TYP) POSITION_NM, POSITION_TYP
+		FROM T_EXECUTIVE_CONT EC
+	    WHERE RECODE_ST ='A' 
+	    <isNotEmpty property="lang_typ" prepend="AND">
+		LANG_TYP=#lang_typ#        
+	    </isNotEmpty>
+	    <isEmpty property="lang_typ" prepend="AND">
+		LANG_TYP='KR'        
+	    </isEmpty>
+	    ORDER BY SORT_NO
+	</select>
+    
+	<!-- 임원현황 등록 -->
+	<insert id="RegInfo" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="sort_no" resultClass="String">
+	         SELECT NVL(MAX(SORT_NO),0)+1 FROM T_EXECUTIVE_CONT WHERE RECODE_ST='A' AND LANG_TYP=#lang_typ#
+	    </selectKey>
+	    <![CDATA[
+	     INSERT INTO T_EXECUTIVE_CONT (SEQ_EXECUTIVE_CONT,REG_DT,REG_ID,RECODE_ST,SORT_NO,EXECUTIVE_NM,POSITION_TYP,START_TERM,END_TERM,CAREER, LANG_TYP) 
+  		 VALUES(SEQ_EXECUTIVE_CONT.nextval,sysdate,#reg_id#,'A',#sort_no#,#executive_nm#,#sel_typ#,#start_term#,#end_term#,#career#, #lang_typ#)
+	    ]]>
+    </insert>
+	
+	<!-- 임원현황 수정  -->
+	<update id="UpdInfo" parameterClass="java.util.HashMap">
+		UPDATE T_EXECUTIVE_CONT
+		SET 
+		EXECUTIVE_NM=#executive_nm#,
+		POSITION_TYP=#sel_typ#,
+		START_TERM=#start_term#,
+		END_TERM=#end_term#,
+		CAREER=#career#,
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_EXECUTIVE_CONT = #seq#
+	</update>
+
+	<!-- 임원현황 삭제 -->
+	<update id="DelInfo" parameterClass="java.util.HashMap">
+		UPDATE T_EXECUTIVE_CONT
+		SET RECODE_ST = 'D',
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_EXECUTIVE_CONT = #seq#
+	</update>
+	
+	<!-- 순서정렬 -->
+	<update id="SortUpdate" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_EXECUTIVE_CONT
+		SET SORT_NO = TO_NUMBER(#sort_no#)
+		where SEQ_EXECUTIVE_CONT = #seq#
+		]]>
+	</update>
+</sqlMap>

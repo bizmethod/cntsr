@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DISC_MNG_00">
+    <!-- 리스트 -->
+	<select id="getMngUrl" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT SEQ_ALIO_URL AS SEQ, URL_NM,IN_URL_YN,
+	    URL, RECODE_ST, TO_CHAR(CHECK_DT, 'yyyy/mm/dd HH:MI:SS') CHECK_DT,
+	    RESULT_CODE, SORT_NO, PARENT_ID, CHECK_YN
+		FROM T_ALIO_URL
+		WHERE PARENT_ID=#PID#
+	]]>
+	<isNotEmpty property="sel_recode">
+		AND RECODE_ST = #sel_recode#
+	</isNotEmpty>
+	<![CDATA[
+		ORDER BY SORT_NO
+	]]>
+    </select>
+    
+	<!-- 	정렬 입력 -->
+	<update id="SortUpdate" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_ALIO_URL
+		SET SORT_NO = TO_NUMBER(#sort_no#)
+		where SEQ_ALIO_URL = #seq#
+		]]>
+	</update>
+    
+</sqlMap>

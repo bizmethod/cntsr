@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SYST_UME_01">
+    
+    <select id="get2depthNm" resultClass="java.lang.String">
+		SELECT MENU_NM FROM T_MENU WHERE MENU_ID=#menu_id# AND MENU_TYP='US'
+	</select>
+    
+    <select id="get2depthMenu" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT MENU_ID, MENU_NM, URL, SORT_NO, RECODE_ST, URL_JSP,
+		CASE WHEN (SELECT COUNT(*) FROM T_MENU WHERE PARENT_ID = A.MENU_ID AND DEPTH='2') > 0 THEN 'Y' ELSE 'N' END DEPTH2_YN
+		FROM T_MENU A
+		WHERE PARENT_ID = #menu_id# AND DEPTH='2' AND MENU_TYP='US'
+		ORDER BY SORT_NO
+	]]>
+    </select>
+    
+    <insert id="add2depthMenu" parameterClass="java.util.HashMap">
+		<selectKey keyProperty="codeId" resultClass="int" type="post">
+	         SELECT 1 FROM DUAL
+	    </selectKey>
+		<![CDATA[
+		INSERT INTO T_MENU (MENU_ID, MENU_NM, REG_ID, REG_DT,RECODE_ST, URL, DEPTH, SORT_NO, PARENT_ID, MENU_TYP, LANG_TYP,URL_JSP)
+		VALUES(#menu_id#, #menu_nm#, #user_id#, SYSDATE, #recode_st#, #url#, '2', #sort_no#, #parent_id#, 'US', #lang_typ#,#url_jsp#)
+		]]>
+	</insert>
+	
+    <update id="upd2depthMenu" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_MENU 
+		SET MENU_NM = #menu_nm#, 
+		UPD_ID = #user_id# , 
+		UPD_DT = SYSDATE,
+		SORT_NO = #sort_no#,
+		URL = #url#,
+		URL_JSP = #url_jsp#,
+		RECODE_ST = #recode_st#
+		WHERE MENU_ID = #menu_id# AND MENU_TYP='US'
+		]]>
+	</update>
+	
+    <update id="del2depthMenu" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_MENU
+		SET RECODE_ST='D' 
+		WHERE MENU_ID IN (SELECT MENU_ID FROM T_MENU START WITH MENU_ID=#menu_id# 
+		CONNECT BY PRIOR MENU_ID = PARENT_ID) AND MENU_TYP='US'
+		]]>
+	</update>
+    
+</sqlMap>

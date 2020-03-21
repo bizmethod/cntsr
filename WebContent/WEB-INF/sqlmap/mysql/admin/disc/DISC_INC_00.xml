@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DISC_INC_00">
+    <!-- 포괄손익계산서 조회 -->
+	<select id="getIncList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT SEQ_INCLUSIVE_INCOME, TITLE_KR, REG_ID, TO_CHAR(REG_DT, 'yyyy/mm/dd') REG_DT, DISP_YN
+	 	FROM T_INCLUSIVE_INCOME
+		WHERE RECODE_ST = 'A'
+	]]>
+    </select>
+    
+	<!-- 노출 여부 리셋 -->
+	<update id="ynReset" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_INCLUSIVE_INCOME 
+		SET DISP_YN = 'N'
+		]]>
+	</update>
+
+	<!-- 노출 여부 저장 -->
+	<update id="goSave" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_INCLUSIVE_INCOME 
+		SET DISP_YN = 'Y', 
+		UPD_ID = #reg_id#, 
+		UPD_DT = SYSDATE
+		WHERE SEQ_INCLUSIVE_INCOME = #seq#
+		]]>
+	</update>
+    
+</sqlMap>

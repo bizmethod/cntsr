@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="INTR_SQU_00">
+    
+    <!-- 상세조회 -->
+    <select id="getSquadList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT SEQ_PLAYER, POSITION, NAME,CAREER, SORT_NO,
+		(SELECT TABLE_SEQ FROM T_IMAGE WHERE TABC_TYP='PL' AND RECODE_ST='A' AND TABLE_SEQ=P.SEQ_PLAYER) AS IMG_SEQ
+		FROM T_PLAYER P
+	    WHERE RECODE_ST ='A' 
+	    ORDER BY SORT_NO, REG_DT
+	</select>
+    
+	<!-- 	정렬 입력 -->
+	<update id="SortUpdate" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_PLAYER
+		SET SORT_NO = TO_NUMBER(#sort_no#)
+		where SEQ_PLAYER = #seq#
+		]]>
+	</update>
+	
+</sqlMap>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="COMM_VOI_01">
+    
+	<select id="getDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT TV.CVOC_TYP, TV.TEL, TV.EMAIL, TV.INQUIRY, TV.TITLE, TV.REG_NM, TV.PRGR_TYP,
+		TO_CHAR(TV.REG_DT, 'yyyy/mm/dd') REG_DT, 
+		TV.REALIP,
+		(SELECT CODE_NM FROM C_CODE WHERE CODESET='CVOC' AND CODE = TV.CVOC_TYP) CVOC_TYP_NM, 
+		TV.CVOC_TYP, 
+		(SELECT CODE_NM FROM C_CODE WHERE CODESET='PRGR' AND CODE = TV.PRGR_TYP) PRGR_TYP_NM,
+		(SELECT CODE_NM FROM C_CODE WHERE CODESET='PRNO' AND CODE = TVA.ANSW_TYP) PRNO_TYP_NM,
+		TVA.ANSW_TYP, TVA.ANSWER,
+    	(SELECT F.SEQ_FILE FROM T_FILE F WHERE F.TABLE_SEQ = TV.SEQ_VOICE AND F.TABC_TYP = 'VO' AND ROWNUM = 1) FILE_SEQ,
+    	(SELECT F.ORG_FILE_NM FROM T_FILE F WHERE F.TABLE_SEQ = TV.SEQ_VOICE AND F.TABC_TYP = 'VO' AND ROWNUM = 1) ORG_FILE_NM
+		FROM T_VOICE TV LEFT OUTER JOIN T_VOICE_ANSWER TVA
+        ON TV.SEQ_VOICE = TVA.SEQ_VOICE
+	    WHERE TV.SEQ_VOICE=#seq# AND TV.RECODE_ST='A' AND ROWNUM = 1
+	</select>
+
+	<!-- 답변 갯수 조회 -->
+	<select id="getAnswerCnt" resultClass="int" parameterClass="java.util.HashMap">
+		SELECT COUNT(ANSWER) CNT
+	    FROM T_VOICE_ANSWER
+	    WHERE SEQ_VOICE = #seq#
+	</select>
+	
+	<!-- 게시물 수정 -->
+	<update id="UpdAppr" parameterClass="java.util.HashMap">
+		UPDATE T_VOICE
+		SET 
+		PRGR_TYP = #prgr_typ#,
+		UPD_NM = #reg_nm#,
+		UPD_DT = sysdate
+		WHERE SEQ_VOICE = #seq#
+	</update>
+	
+	<!-- 답변등록 -->
+	<insert id="RegAnswer" parameterClass="java.util.HashMap">
+		<selectKey keyProperty="select" resultClass="int">
+	         SELECT 1 FROM DUAL
+	    </selectKey>
+		<![CDATA[
+		INSERT INTO T_VOICE_ANSWER (SEQ_VOICE, ANSWER, REG_ID, REG_DT, RECODE_ST, ANSW_TYP)
+		VALUES(#seq#,#answer#,#reg_id#, sysdate, 'A', #answ_typ#)
+		]]>
+	</insert>
+	
+	<!-- 답변수정 -->
+    <update id="UpdAnswer" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_VOICE_ANSWER 
+		SET ANSWER = #answer#, 
+		ANSW_TYP = #answ_typ# , 
+		UPD_ID = #reg_id# , 
+		UPD_DT = SYSDATE
+		WHERE SEQ_VOICE = #seq#
+		]]>
+	</update>
+
+</sqlMap>

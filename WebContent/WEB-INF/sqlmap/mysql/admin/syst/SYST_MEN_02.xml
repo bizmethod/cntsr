@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SYST_MEN_02">
+    
+    <select id="getPrevPid" resultClass="java.lang.String">
+		SELECT PARENT_ID FROM T_MENU WHERE MENU_ID=#menu_id# AND MENU_TYP='AM' AND ADM_TYP = 'GKL'
+	</select>
+    
+    <select id="get3depthNm" resultClass="java.lang.String">
+		SELECT MENU_NM FROM T_MENU WHERE MENU_ID=#menu_id# AND MENU_TYP='AM' AND ADM_TYP = 'GKL'
+	</select>
+    
+    <select id="get3depthMenu" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT MENU_ID, MENU_NM, URL, SORT_NO, RECODE_ST,
+		CASE WHEN (SELECT COUNT(*) FROM T_MENU WHERE PARENT_ID = A.MENU_ID AND DEPTH='2') > 0 THEN 'Y' ELSE 'N' END DEPTH2_YN
+		FROM T_MENU A
+		WHERE PARENT_ID = #menu_id# AND DEPTH='3' AND MENU_TYP='AM' AND ADM_TYP = 'GKL'
+		ORDER BY SORT_NO
+	]]>
+    </select>
+    
+    <insert id="add3depthMenu" parameterClass="java.util.HashMap">
+		<selectKey keyProperty="codeId" resultClass="int" type="post">
+	         SELECT 1 FROM DUAL
+	    </selectKey>
+		<![CDATA[
+		INSERT INTO T_MENU (MENU_ID, MENU_NM, REG_ID, REG_DT,RECODE_ST, URL, DEPTH, SORT_NO, PARENT_ID, MENU_TYP, LANG_TYP,ADM_TYP)
+		VALUES(#menu_id#, #menu_nm#, #user_id#, SYSDATE, #recode_st#, #url#, '3', #sort_no#, #parent_id#, 'AM', 'KR','GKL')
+		]]>
+	</insert>
+	
+    <update id="upd3depthMenu" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_MENU 
+		SET MENU_NM = #menu_nm#, 
+		UPD_ID = #user_id# , 
+		UPD_DT = SYSDATE,
+		SORT_NO = #sort_no#,
+		URL = #url#,
+		RECODE_ST = #recode_st#
+		WHERE MENU_ID = #menu_id# AND MENU_TYP='AM' AND ADM_TYP = 'GKL'
+		]]>
+	</update>
+	
+    <update id="del3depthMenu" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_MENU
+		SET RECODE_ST='D'  
+		WHERE MENU_ID = #menu_id# AND MENU_TYP='AM' AND ADM_TYP = 'GKL'
+		]]>
+	</update>
+    
+</sqlMap>

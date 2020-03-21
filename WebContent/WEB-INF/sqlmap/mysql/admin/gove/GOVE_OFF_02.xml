@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GOVE_OFF_02">
+    
+    <!-- 타이틀조회 -->
+	<select id="get2depthInfo" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+    	SELECT INLI_TYP, (SELECT CODE_NM FROM C_CODE WHERE CODESET='INLI' AND CODE = P.INLI_TYP) INLI_TYP_NM, TITLE 
+    	FROM T_PRE_INFOM_LST P
+    	WHERE  SEQ_PRE_INFOM_LST=#parent_id#
+    </select>
+</sqlMap>

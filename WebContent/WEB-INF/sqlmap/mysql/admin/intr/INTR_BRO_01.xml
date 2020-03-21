@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="INTR_BRO_01">
+    
+    <!-- 브로셔 상세 -->
+    <select id="getBrochureDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT SEQ_BROCHURE, TITLE, TERM, DESCRIPTION, ALT
+		FROM (
+				 SELECT I.TITLE, I.DESCRIPTION, I.ALT, B.TERM, B.SEQ_BROCHURE
+				 FROM T_IMAGE I, T_BROCHURE B
+                 WHERE  I.TABLE_SEQ = b.SEQ_BROCHURE AND I.TABC_TYP='BC' AND I.RECODE_ST='A' AND I.THUMB_YN = 'N'
+                 )
+	    WHERE SEQ_BROCHURE=#seq#
+	</select>
+    
+    <!-- 원본 이미지 등록 -->
+	<insert id="RegImage" parameterClass="java.util.HashMap">
+	   <selectKey keyProperty="insert" resultClass="java.lang.String">
+			SELECT 1 FROM DUAL
+		</selectKey>
+	    <![CDATA[
+	    INSERT INTO T_IMAGE (SEQ_IMAGE,TABC_TYP,TABLE_SEQ,ORG_IMG_NM,IMG_DIR,REG_ID,REG_DT,RECODE_ST,THUMB_YN, DESCRIPTION, ALT, TITLE, IMG_NM) 
+  		 VALUES(SEQ_IMAGE.nextval,'BC',#seq#,#pic_org_nm#,#img_file_path#,#user_id#,sysdate,'A','N', #description#, #alt#, #title#, #pic_name#)
+	    ]]>
+    </insert>
+
+	<!-- 섬네일 이미지 등록 -->
+	<insert id="RegThumbImage" parameterClass="java.util.HashMap">
+	   <selectKey keyProperty="insert" resultClass="java.lang.String">
+			SELECT 1 FROM DUAL
+		</selectKey>
+	    <![CDATA[
+	    INSERT INTO T_IMAGE (SEQ_IMAGE,TABC_TYP,TABLE_SEQ,ORG_IMG_NM,IMG_DIR,REG_ID,REG_DT,RECODE_ST,THUMB_YN, IMG_NM) 
+  		 VALUES(SEQ_IMAGE.nextval,'BC',#seq#,#thumb_org_nm#,#thumb_file_path#,#user_id#,sysdate,'A','Y',#thumb_name#)
+	    ]]>
+    </insert>
+
+	<!-- 브로셔 등록 -->
+	<insert id="RegBrochure" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_BROCHURE.nextval FROM DUAL
+		</selectKey>
+	    <![CDATA[
+	    INSERT INTO T_BROCHURE (SEQ_BROCHURE, REG_ID,REG_DT,RECODE_ST,TERM) 
+  		 VALUES(#seq#,#user_id#,sysdate,'A',#term#)
+	    ]]>
+    </insert>
+    
+	<!-- 브로셔 수정 -->
+	<update id="UpdBrochure" parameterClass="java.util.HashMap">
+		UPDATE T_BROCHURE
+		SET 
+		TERM = #term#,
+		UPD_DT = sysdate,
+		UPD_ID = #user_id#
+		WHERE SEQ_BROCHURE = #seq#
+	</update>
+
+	<!-- 이미지 정보 수정 -->
+	<update id="UpdImageInfo" parameterClass="java.util.HashMap">
+		UPDATE T_IMAGE
+		SET 
+		DESCRIPTION = #description#,
+		TITLE = #title#,
+		alt = #alt#,
+		UPD_DT = sysdate,
+		UPD_ID = #user_id#
+		WHERE TABC_TYP='BC' AND TABLE_SEQ = #seq# AND THUMB_YN='N'
+	</update>
+	
+	<!-- 원본 이미지 수정 -->
+	<update id="UpdImage" parameterClass="java.util.HashMap">
+		UPDATE T_IMAGE
+		SET 
+		RECODE_ST = 'D' 
+		WHERE TABC_TYP='BC' AND TABLE_SEQ = #seq# AND THUMB_YN='N'
+	</update>
+
+	<!-- 섬네일 이미지 수정 -->
+	<update id="UpdThumbImage" parameterClass="java.util.HashMap">
+		UPDATE T_IMAGE
+		SET 
+		RECODE_ST = 'D' 
+		WHERE TABC_TYP='BC' AND TABLE_SEQ = #seq# AND THUMB_YN='Y'
+	</update>
+	
+	<!-- 브로셔 삭제 -->
+	<update id="DelBrochure" parameterClass="java.util.HashMap">
+		UPDATE T_BROCHURE
+		SET 
+		RECODE_ST = 'D' 
+		WHERE SEQ_BROCHURE = #seq#
+	</update>
+</sqlMap>

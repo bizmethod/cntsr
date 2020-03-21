@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ETHI_BTR_01">
+    
+    <!-- 상세조회 -->
+	<select id="getDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT BT.SEQ_BUSINESS_TRIP, BT.MEMBER_NM, BT.ORG_NM, BT.POSITION_NM,
+		TO_CHAR(TO_DATE(BT.START_D,'yyyymmdd'),'yyyy/mm/dd') START_D , TO_CHAR(TO_DATE(BT.END_D,'yyyymmdd'),'yyyy/mm/dd') END_D,
+		BT.PLACE, BT.PURPOSE,BT.BUSINESS_TRIP_NO, BT.DRAFT_NM, BT.DRAFT_ORG_NM, BT.EMPL_TYP, F.ORG_FILE_NM
+		FROM T_BUSINESS_TRIP BT LEFT OUTER JOIN T_FILE F 
+		ON BT.SEQ_BUSINESS_TRIP = F.TABLE_SEQ AND F.TABC_TYP = 'BT' AND F.RECODE_ST='A'
+	    WHERE BT.SEQ_BUSINESS_TRIP=#seq#
+	</select>
+    
+    <!-- 등록 -->
+	<insert id="RegData" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_BUSINESS_TRIP.NEXTVAL FROM DUAL
+		</selectKey>
+	    <![CDATA[
+	    INSERT INTO T_BUSINESS_TRIP (SEQ_BUSINESS_TRIP,MEMBER_NM,START_D,END_D, PLACE, PURPOSE, DRAFT_NM, DRAFT_ORG_NM, REG_ID, REG_DT,RECODE_ST, EMPL_TYP, BUSINESS_TRIP_NO, ORG_NM, POSITION_NM) 
+  		 VALUES(#seq#, #member_nm#, #start_d#, #end_d#, #place#, #purpose#, #draft_nm#, #draft_org_nm#, #user_id#, sysdate, 'A', #sel_typ#, #bt_no#, #org_nm#, #position_nm#)
+	    ]]>
+    </insert>
+    
+	<!-- 수정 -->
+	<update id="UpdData" parameterClass="java.util.HashMap">
+		UPDATE T_BUSINESS_TRIP
+		SET 
+		MEMBER_NM = #member_nm#,
+		ORG_NM = #org_nm#,
+		POSITION_NM = #position_nm#,
+		START_D = #start_d#,
+		END_D = #end_d#,
+		PLACE = #place#,
+		PURPOSE = #purpose#,
+		BUSINESS_TRIP_NO = #bt_no#,
+		DRAFT_NM = #draft_nm#,
+		DRAFT_ORG_NM = #draft_org_nm#,
+		EMPL_TYP=#sel_typ#,
+		UPD_ID=#user_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_BUSINESS_TRIP = #seq#
+	</update>
+    
+   <!-- 	파일입력 -->
+	<insert id="fileInsert" parameterClass="java.util.HashMap">
+		insert into T_FILE (TABLE_SEQ ,TABC_TYP, FILE_DIR,ORG_FILE_NM ,FILE_SIZE ,SEQ_FILE, REG_ID, REG_DT, RECODE_ST, FILE_NM)
+		VALUES(#seq# ,'BT', #file_dir_nm# ,#file_org_nm# ,#file_size# ,SEQ_FILE.nextval, #user_id#, sysdate, 'A', #file_name#)
+	</insert>
+	
+	<update id="fileDelete" parameterClass="java.util.HashMap">
+		UPDATE T_FILE
+		SET RECODE_ST = 'D',
+		UPD_ID=#user_id#,
+		UPD_DT=sysdate
+		WHERE TABLE_SEQ = #seq# AND TABC_TYP='BT' AND RECODE_ST='A'
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<update id="DelData" parameterClass="java.util.HashMap">
+		UPDATE T_BUSINESS_TRIP
+		SET 
+		RECODE_ST = 'D' 
+		WHERE SEQ_BUSINESS_TRIP = #seq#
+	</update>
+</sqlMap>

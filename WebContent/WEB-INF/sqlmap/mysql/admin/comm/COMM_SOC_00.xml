@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="COMM_SOC_00">
+    
+    <select id="getExcelDown" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		<![CDATA[
+		SELECT N.TITLE, N.SEQ_NOTICE,
+		 CASE WHEN (SELECT COUNT(*) FROM T_NOTICE WHERE SEQ_NOTICE = N.SEQ_NOTICE AND KOGL_OPEN_YN = 'Y' ) > 0 THEN '출처표시' ELSE '' END KOGL_OPEN_YN,
+         CASE WHEN (SELECT COUNT(*) FROM T_NOTICE WHERE SEQ_NOTICE = N.SEQ_NOTICE AND KOGL_B_YN = 'Y' ) > 0 THEN '상업적이용가능' ELSE '상업적이용금지' END KOGL_B_YN,
+         CASE WHEN (SELECT COUNT(*) FROM T_NOTICE WHERE SEQ_NOTICE = N.SEQ_NOTICE AND KOGL_M_YN = 'Y' ) > 0 THEN '변경허용' ELSE '변경금지' END KOGL_M_YN
+		FROM T_NOTICE N
+		WHERE (N.NOTI_TYP = #noti_typ1#
+		]]>
+		<isNotEmpty property="noti_typ2" prepend="OR">
+		    N.NOTI_TYP = #noti_typ2#
+		</isNotEmpty>
+		<![CDATA[
+		) AND N.KOGL_CON_YN='N' AND N.KOGL_OPEN_YN='Y'
+		]]>
+		<![CDATA[
+		ORDER BY REG_DT DESC
+		]]>
+	</select>
+
+</sqlMap>

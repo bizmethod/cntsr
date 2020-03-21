@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GOVE_OFF_01">
+    
+    <!-- 상세조회 -->
+	<select id="getDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT SEQ_PRE_INFOM_LST, TITLE, DEPT, P_PERIOD, P_TIME,INLI_TYP,LINK_TYP, URL
+		FROM T_PRE_INFOM_LST
+	    WHERE SEQ_PRE_INFOM_LST=#seq#
+	</select>
+    
+    <!-- 1depth 리스트등록 -->
+	<insert id="RegData" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_PRE_INFOM_LST.NEXTVAL FROM DUAL
+		</selectKey>
+	    <![CDATA[
+	    INSERT INTO T_PRE_INFOM_LST ( SEQ_PRE_INFOM_LST,TITLE,DEPT,P_PERIOD,P_TIME,LINK_TYP, URL, REG_ID,REG_DT,RECODE_ST,INLI_TYP) 
+  		 VALUES(#seq#, #title#, #dept#, #p_period#, #p_time#, #link_typ#, #url#, #reg_id#, sysdate, 'A', #sel_typ#)
+	    ]]>
+    </insert>
+    
+	<!-- 1depth리스트 수정 -->
+	<update id="UpdData" parameterClass="java.util.HashMap">
+		UPDATE T_PRE_INFOM_LST
+		SET 
+		TITLE = #title#,
+		DEPT = #dept#,
+		P_PERIOD = #p_period#,
+		P_TIME = #p_time#,
+		INLI_TYP = #sel_typ#,
+		LINK_TYP = #link_typ#, 
+		URL = #url#,
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_PRE_INFOM_LST = #seq#
+	</update>
+    
+	<!-- 삭제 -->
+	<update id="DelData" parameterClass="java.util.HashMap">
+		UPDATE T_PRE_INFOM_LST
+		SET 
+		RECODE_ST = 'D' 
+		WHERE SEQ_PRE_INFOM_LST = #seq#
+	</update>
+</sqlMap>
