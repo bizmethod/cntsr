@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ETHI_ADM_00">
+    <!-- 관리자 조회 -->
+	<select id="getVisitAdmin" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT EMAIL, REG_ID, REG_DT, RECODE_ST, NAME, ADMIN_ID,
+	    (SELECT MAX(TO_CHAR(SEND_DT, 'yyyy/mm/dd HH:MI:SS')) FROM T_MAIL_SEND WHERE EMAILID=VA.EMAIL) SEND_DT
+	    FROM T_ETHI_ADMIN VA
+	    WHERE RECODE_ST = 'A' AND NOTE ='ETHI'
+	]]>
+    </select>
+    
+	<!-- 관리자 등록 -->
+	<insert id="RegAdmin" parameterClass="java.util.HashMap">
+		<selectKey keyProperty="select" resultClass="int">
+	         SELECT 1 FROM DUAL
+	    </selectKey>
+		<![CDATA[
+		INSERT INTO T_ETHI_ADMIN ( EMAIL,REG_ID,REG_DT,RECODE_ST,NOTE,NAME,ADMIN_ID )
+		VALUES( #email#, #user_id#, sysdate, 'A' , 'ETHI' , #admin_nm#,
+		]]>
+		<isNotEmpty property="admin_id">
+		#admin_id#
+		</isNotEmpty>
+		<isEmpty property="admin_id">
+		''
+		</isEmpty>
+		<![CDATA[
+		)
+		]]>
+	</insert>
+	
+	<!-- 관리자 삭제 -->
+	<update id="DelAdmin" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_ETHI_ADMIN
+		SET RECODE_ST = 'D', 
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE ADMIN_ID = #admin_id#		
+		]]>		
+	</update>
+    
+</sqlMap>

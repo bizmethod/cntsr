@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MAIN_BAN_01">
+    
+    <select id="getBannerDetailList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT ID_MAIN_IMAGE,DESCRIPTION,ALT,TITLE,URL,RECODE_ST,LANG_TYP,LANG_USE_YN,FILE_PATH,FILE_NM
+		FROM T_MAIN_IMAGE
+		WHERE ID_MAIN_IMAGE=#img_id# AND LANG_USE_YN = 'Y'
+	]]>
+    </select>
+    
+    <select id="getMainbannerId" resultClass="java.lang.String">
+		select FN_GETTABLEID('MAIN_BANNER') FROM DUAL
+	</select>
+	
+    <select id="getNextSortNo" resultClass="java.lang.String">
+		SELECT NVL(MAX(SORT_NO)+1,0) FROM T_MAIN_IMAGE WHERE MAIN_TYP=#main_typ#
+	</select>
+	
+	<insert id="RegMainBannerInsert" parameterClass="java.util.HashMap">
+		    INSERT INTO T_MAIN_IMAGE (ID_MAIN_IMAGE,LANG_TYP,REG_ID,REG_DT,RECODE_ST,MAIN_TYP) 
+	  		SELECT #img_id#,CODE,#reg_id#,sysdate,#recode_st#,#main_typ# FROM C_CODE WHERE CODESET = 'LANG'
+    </insert>
+    
+	<update id="RegMainBannerUpdate" parameterClass="java.util.HashMap">
+		UPDATE T_MAIN_IMAGE
+		SET UPD_DT = sysdate,
+			UPD_ID = #reg_id#,
+		    RECODE_ST = 'I',
+		    LANG_USE_YN = 'N'
+		WHERE ID_MAIN_IMAGE = #img_id#
+	</update>
+    
+	<update id="RegMainBannerCommon" parameterClass="java.util.HashMap">
+		UPDATE T_MAIN_IMAGE
+		SET TITLE = #title#,
+			DESCRIPTION = #description#,
+			FILE_NM = #banner_name#,
+			FILE_PATH = #file_path#,
+			ALT = #alt#,
+			URL = #url#,
+			LANG_USE_YN = 'Y'
+		WHERE ID_MAIN_IMAGE = #img_id# AND LANG_TYP = #lang_typ#
+	</update>
+	
+	<update id="RegMainBannerUpdateLast" parameterClass="java.util.HashMap">
+		UPDATE T_MAIN_IMAGE
+		SET RECODE_ST = #recode_st#
+		WHERE ID_MAIN_IMAGE = #img_id#
+	</update>
+	
+	<update id="RegMainBannerUpdateSort" parameterClass="java.util.HashMap">
+		UPDATE T_MAIN_IMAGE
+		SET SORT_NO = (SELECT MAX(SORT_NO)+1 FROM T_MAIN_IMAGE WHERE MAIN_TYP=#main_typ#)
+		WHERE ID_MAIN_IMAGE = #img_id#
+	</update>
+</sqlMap>

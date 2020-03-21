@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ETHI_ETC_03">
+    
+    <!-- 상세조회 -->
+	<select id="getEtcDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT E.NOTE, E.GUBN_NM, E.LAW_CNT, F.ORG_FILE_NM, E.TITLE
+		FROM T_ETC E LEFT OUTER JOIN T_FILE F
+		ON E.SEQ_ETC = F.TABLE_SEQ AND F.TABC_TYP = 'ET' AND F.RECODE_ST='A'
+	    WHERE SEQ_ETC=#seq#
+	</select>
+    
+    <!-- 기타현황 등록 -->
+	<insert id="RegData" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_ETC.NEXTVAL FROM DUAL
+		</selectKey>
+	    <![CDATA[
+	    INSERT INTO T_ETC (SEQ_ETC,GUBN_NM,TECT_TYP,REG_ID,REG_DT,RECODE_ST,LAW_CNT, NOTE,TITLE) 
+  		 VALUES(#seq#, #gubn_nm#, '02', #reg_id#, sysdate, 'A', #law_cnt#, #note#, #title#)
+	    ]]>
+    </insert>
+    
+	<!-- 기타현황 수정 -->
+	<update id="UpdData" parameterClass="java.util.HashMap">
+		UPDATE T_ETC
+		SET GUBN_NM = #gubn_nm#,
+		TITLE = #title#,
+		NOTE = #note#,
+		LAW_CNT = #law_cnt#,
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_ETC = #seq#
+	</update>
+    
+   <!-- 	파일입력 -->
+	<insert id="fileInsert" parameterClass="java.util.HashMap">
+		insert into T_FILE (TABLE_SEQ ,TABC_TYP, FILE_DIR,ORG_FILE_NM ,FILE_SIZE ,SEQ_FILE, FILE_ID, REG_ID, REG_DT, RECODE_ST, FILE_NM)
+		VALUES(#seq# ,'ET', #file_dir_nm# ,#file_org_nm# ,#file_size# ,SEQ_FILE.nextval, #file_id#, #reg_id#, sysdate, 'A', #file_name#)
+	</insert>
+	
+	<update id="fileDelete" parameterClass="java.util.HashMap">
+		UPDATE T_FILE
+		SET RECODE_ST = 'D',
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE TABLE_SEQ = #seq# AND TABC_TYP='ET' AND RECODE_ST='A'
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<update id="DelEtc" parameterClass="java.util.HashMap">
+		UPDATE T_ETC
+		SET 
+		RECODE_ST = 'D' 
+		WHERE SEQ_ETC = #seq#
+	</update>
+</sqlMap>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ETHI_ETC_01">
+    
+    <!-- 상세조회 -->
+	<select id="getEtcDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT SEQ_CLEAN_MEMBER,TEAM_NM,POSITION_NM,GRADE_NM,MEMBER_NM
+		FROM T_CLEAN_MEMBER
+	    WHERE RECODE_ST = 'A'
+	      AND SEQ_CLEAN_MEMBER=#seq#
+	</select>
+    
+    <!-- 기타현황 등록 -->
+	<insert id="RegData" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_ETC.NEXTVAL FROM DUAL
+		</selectKey>
+	    <![CDATA[
+	    INSERT INTO T_CLEAN_MEMBER (SEQ_CLEAN_MEMBER,TEAM_NM,POSITION_NM,GRADE_NM,MEMBER_NM,REG_ID,REG_DT,RECODE_ST) 
+  		 VALUES(#seq#, #TEAM_NM#, #POSITION_NM#, #GRADE_NM#, #MEMBER_NM#, #reg_id#, sysdate, 'A')
+	    ]]>
+    </insert>
+    
+	<!-- 기타현황 수정 -->
+	<update id="UpdData" parameterClass="java.util.HashMap">
+		UPDATE T_CLEAN_MEMBER
+		SET TEAM_NM = #TEAM_NM#,
+		POSITION_NM = #POSITION_NM#,
+		GRADE_NM = #GRADE_NM#,
+		MEMBER_NM = #MEMBER_NM#,
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_CLEAN_MEMBER = #seq#
+	</update>
+    
+	<!-- 게시물 삭제 -->
+	<update id="DelEtc" parameterClass="java.util.HashMap">
+		UPDATE T_CLEAN_MEMBER
+		SET 
+		RECODE_ST = 'D' 
+		WHERE SEQ_CLEAN_MEMBER = #seq#
+	</update>
+</sqlMap>

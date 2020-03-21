@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DISC_BAL_01">
+    
+    <select id="getDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT SEQ_BALANCE_SHEETS
+		, TITLE_KR, TITLE_JP, TITLE_EN, TITLE_CN, TITLE_KR_BASE, TITLE_JP_BASE, TITLE_EN_BASE, TITLE_CN_BASE, CUR_ASS, CASH_ASS, OTHER_FI_ASS, TRADE_RECV, INVENTORY, OTHER_CUR_ASS, SELL_SCHE_ASS
+		, NON_CUR_ASS, OTHER_NON_FI_ASS, NON_TRADE_RECV, TANGIBLE_ASS, INTANGIBLE_ASS, DEF_TAX_ASS
+		, OTHER_NON_CUR_ASS, TOT_ASS, CAPITAL_STOCK, CAPITAL_SURPLUS, OTHER_COMP_INCOME, EARNED_SURPLUS
+		, TOT_STOCK, CUR_LIAB, OTHER_LIAB, OTHER_FI_LIAB, INCOME_TAX_PAY, OTHER_CUR_LIAB, NON_CUR_LIAB
+		, NON_CUR_FI_LIAB, RETIRE_LIAB, OTHER_NON_CUR_LIAB, TOT_LIAB, TOT_STOCK_EQU_LIAB
+		FROM T_BALANCE_SHEETS
+		WHERE RECODE_ST = 'A' AND SEQ_BALANCE_SHEETS = #seq#
+	]]>
+    </select>
+    
+	<!-- 재무상태표 등록 -->
+	<insert id="RegBsData" parameterClass="java.util.HashMap">
+		 <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_BALANCE_SHEETS.NEXTVAL FROM DUAL
+		</selectKey>
+		<![CDATA[
+		INSERT INTO T_BALANCE_SHEETS( SEQ_BALANCE_SHEETS
+		, TITLE_KR, TITLE_JP, TITLE_EN, TITLE_CN, TITLE_KR_BASE, TITLE_JP_BASE, TITLE_EN_BASE, TITLE_CN_BASE, CUR_ASS, CASH_ASS, OTHER_FI_ASS, TRADE_RECV, INVENTORY, OTHER_CUR_ASS, SELL_SCHE_ASS
+		, NON_CUR_ASS, OTHER_NON_FI_ASS, NON_TRADE_RECV, TANGIBLE_ASS, INTANGIBLE_ASS, DEF_TAX_ASS
+		, OTHER_NON_CUR_ASS, TOT_ASS, CAPITAL_STOCK, CAPITAL_SURPLUS, OTHER_COMP_INCOME, EARNED_SURPLUS
+		, TOT_STOCK, CUR_LIAB, OTHER_LIAB, OTHER_FI_LIAB, INCOME_TAX_PAY, OTHER_CUR_LIAB, NON_CUR_LIAB
+		, NON_CUR_FI_LIAB, RETIRE_LIAB, OTHER_NON_CUR_LIAB, TOT_LIAB, TOT_STOCK_EQU_LIAB
+		, REG_ID, REG_DT, RECODE_ST, DISP_YN
+		)
+		VALUES( #seq#
+		, #title_kr#, #title_jp#, #title_en#, #title_cn#, #title_kr_base#, #title_jp_base#, #title_en_base#, #title_cn_base#, #cur_ass#, #cash_ass#, #other_fi_ass#, #trade_recv#, #inventory#, #other_cur_ass#, #sell_sche_ass#
+		, #non_cur_ass#, #other_non_fi_ass#, #non_trade_recv#, #tangible_ass#, #intangible_ass#, #def_tax_ass#
+		, #other_non_cur_ass#, #tot_ass#, #capital_stock#, #capital_surplus#, #other_comp_income#, #earned_surplus#
+		, #tot_stock#, #cur_liab#, #other_liab#, #other_fi_liab#, #income_tax_pay#, #other_cur_liab#, #non_cur_liab#
+		, #non_cur_fi_liab#, #retire_liab#, #other_non_cur_liab#, #tot_liab#, #tot_stock_equ_liab#
+		, #user_id#, sysdate, 'A', 'N'
+		)
+		]]>
+	</insert>
+	
+	<!-- 재무상태표 수정 -->
+    <update id="UpdBsData" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_BALANCE_SHEETS 
+		SET 
+		TITLE_KR = #title_kr#
+		, TITLE_JP = #title_jp#
+		, TITLE_EN = #title_en#
+		, TITLE_CN = #title_cn#
+		, TITLE_KR_BASE = #title_kr_base#
+		, TITLE_JP_BASE = #title_jp_base#
+		, TITLE_EN_BASE = #title_en_base#
+		, TITLE_CN_BASE = #title_cn_base#
+		, CUR_ASS = #cur_ass#
+		, CASH_ASS = #cash_ass#
+		, OTHER_FI_ASS = #other_fi_ass#
+		, TRADE_RECV = #trade_recv#
+		, INVENTORY = #inventory#
+		, OTHER_CUR_ASS = #other_cur_ass#
+		, SELL_SCHE_ASS = #sell_sche_ass#
+		, NON_CUR_ASS = #non_cur_ass#
+		, OTHER_NON_FI_ASS = #other_non_fi_ass#
+		, NON_TRADE_RECV = #non_trade_recv#
+		, TANGIBLE_ASS = #tangible_ass#
+		, INTANGIBLE_ASS = #intangible_ass#
+		, DEF_TAX_ASS = #def_tax_ass#
+		, OTHER_NON_CUR_ASS = #other_non_cur_ass#
+		, TOT_ASS = #tot_ass#
+		, CAPITAL_STOCK = #capital_stock#
+		, CAPITAL_SURPLUS = #capital_surplus#
+		, OTHER_COMP_INCOME = #other_comp_income#
+		, EARNED_SURPLUS = #earned_surplus#
+		, TOT_STOCK = #tot_stock#
+		, CUR_LIAB = #cur_liab#
+		, OTHER_LIAB = #other_liab#
+		, OTHER_FI_LIAB = #other_fi_liab#
+		, INCOME_TAX_PAY = #income_tax_pay#
+		, OTHER_CUR_LIAB = #other_cur_liab#
+		, NON_CUR_LIAB = #non_cur_liab#
+		, NON_CUR_FI_LIAB = #non_cur_fi_liab#
+		, RETIRE_LIAB = #retire_liab#
+		, OTHER_NON_CUR_LIAB = #other_non_cur_liab#
+		, TOT_LIAB = #tot_liab#
+		, TOT_STOCK_EQU_LIAB = #tot_stock_equ_liab#
+		, UPD_ID = #user_id# 
+		, UPD_DT = SYSDATE
+		WHERE SEQ_BALANCE_SHEETS = #seq#
+		]]>
+	</update>
+    
+</sqlMap>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DISC_EQU_01">
+    
+    <select id="getDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT
+	     TITLE_KR, TITLE_JP, TITLE_EN, TITLE_CN, TITLE_KR_BASE, TITLE_JP_BASE, TITLE_EN_BASE, TITLE_CN_BASE , SEQ_CHANGES_EQU, BEGINNING_CAP, BEG_CAP_STOCK, BEG_EXC_PER_VAL, BEG_COMP_INC
+		, BEG_RET_EAR, BEG_TOT_STOCK, NET_RET_EAR, NET_TOT_STOCK, OTHER_COMP_INC, OTHER_COMP_RET
+		, OTHER_COMP_TOT, SALE_FI_ASS, RETIRE_RET, DEVIDEND_RET, DEVIDEND_TOT, OWNER_RET, OWNER_TOT
+		, ENDING_CAP, END_CAP_STOCK, END_EXC_PER_VAL, END_COMP_INC, END_RET_EAR, END_TOTAL_STOCK
+		FROM T_CHANGES_EQU
+		WHERE RECODE_ST = 'A' AND SEQ_CHANGES_EQU = #seq#
+	]]>
+    </select>
+    
+	<!-- 재무상태표 등록 -->
+	<insert id="RegEqData" parameterClass="java.util.HashMap">
+		 <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_CHANGES_EQU.NEXTVAL FROM DUAL
+		</selectKey>
+		<![CDATA[
+		INSERT INTO T_CHANGES_EQU( SEQ_CHANGES_EQU
+		, TITLE_KR, TITLE_JP, TITLE_EN, TITLE_CN, TITLE_KR_BASE, TITLE_JP_BASE, TITLE_EN_BASE, TITLE_CN_BASE, BEGINNING_CAP, BEG_CAP_STOCK, BEG_EXC_PER_VAL, BEG_COMP_INC
+		, BEG_RET_EAR, BEG_TOT_STOCK, NET_RET_EAR, NET_TOT_STOCK, OTHER_COMP_INC, OTHER_COMP_RET
+		, OTHER_COMP_TOT, SALE_FI_ASS, RETIRE_RET, DEVIDEND_RET, DEVIDEND_TOT, OWNER_RET, OWNER_TOT
+		, ENDING_CAP, END_CAP_STOCK, END_EXC_PER_VAL, END_COMP_INC, END_RET_EAR, END_TOTAL_STOCK
+		, REG_ID, REG_DT, RECODE_ST, DISP_YN
+		)
+		VALUES( #seq#
+		, #title_kr#, #title_jp#, #title_en#, #title_cn#, #title_kr_base#, #title_jp_base#, #title_en_base#, #title_cn_base#, #beginning_cap#, #beg_cap_stock#, #beg_exc_per_val#, #beg_comp_inc#
+		, #beg_ret_ear#, #beg_tot_stock#, #net_ret_ear#, #net_tot_stock#, #other_comp_inc#, #other_comp_ret#
+		, #other_comp_tot#, #sale_fi_ass#, #retire_ret#, #devidend_ret#, #devidend_tot#, #owner_ret#, #owner_tot#
+		, #ending_cap#, #end_cap_stock#, #end_exc_per_val#, #end_comp_inc#, #end_ret_ear#, #end_total_stock#
+		, #user_id#, sysdate, 'A', 'N'
+		)
+		]]>
+	</insert>
+	
+	<!-- 재무상태표 수정 -->
+    <update id="UpdEqData" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_CHANGES_EQU 
+		SET 
+		TITLE_KR = #title_kr#
+		,TITLE_JP = #title_jp#
+		,TITLE_EN = #title_en#
+		,TITLE_CN = #title_cn#
+		,TITLE_KR_BASE = #title_kr_base#
+		,TITLE_JP_BASE = #title_jp_base#
+		,TITLE_EN_BASE = #title_en_base#
+		,TITLE_CN_BASE = #title_cn_base#
+		, BEGINNING_CAP = #beginning_cap#
+		, BEG_CAP_STOCK = #beg_cap_stock#
+		, BEG_EXC_PER_VAL = #beg_exc_per_val#
+		, BEG_COMP_INC = #beg_comp_inc#
+		, BEG_RET_EAR = #beg_ret_ear#
+		, BEG_TOT_STOCK = #beg_tot_stock#
+		, NET_RET_EAR = #net_ret_ear#
+		, NET_TOT_STOCK = #net_tot_stock#
+		, OTHER_COMP_INC = #other_comp_inc#
+		, OTHER_COMP_RET = #other_comp_ret#
+		, OTHER_COMP_TOT = #other_comp_tot#
+		, SALE_FI_ASS = #sale_fi_ass#
+		, RETIRE_RET = #retire_ret#
+		, DEVIDEND_RET = #devidend_ret#
+		, DEVIDEND_TOT = #devidend_tot#
+		, OWNER_RET = #owner_ret#
+		, OWNER_TOT = #owner_tot#
+		, ENDING_CAP = #ending_cap#
+		, END_CAP_STOCK = #end_cap_stock#
+		, END_EXC_PER_VAL = #end_exc_per_val#
+		, END_COMP_INC = #end_comp_inc#
+		, END_RET_EAR = #end_ret_ear#
+		, END_TOTAL_STOCK = #end_total_stock#
+		, UPD_ID = #user_id# 
+		, UPD_DT = SYSDATE
+		WHERE SEQ_CHANGES_EQU = #seq#
+		]]>
+	</update>
+    
+</sqlMap>

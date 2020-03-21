@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MAIN_PUB_00">
+	<select id="getMainBanner" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT ID_MAIN_IMAGE,SORT_NO,RECODE_ST,TITLE,URL,Row_Number() OVER (ORDER BY SORT_NO, RECODE_ST, REG_DT DESC) AS "ROWNUM"
+		FROM T_MAIN_IMAGE
+		WHERE MAIN_TYP=#main_typ# AND LANG_TYP = 'KR'  
+	]]>
+	<isNotEmpty property="sel_recode">
+		AND RECODE_ST = #sel_recode#
+	</isNotEmpty>
+	<![CDATA[
+		ORDER BY SORT_NO
+	]]>
+    </select>
+    
+	<!-- 	정렬 입력 -->
+	<update id="mainBannerSortUpdate" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_MAIN_IMAGE
+		SET SORT_NO = TO_NUMBER(#sort_no#)
+		where MAIN_TYP=#main_typ# AND ID_MAIN_IMAGE = #img_id#
+		]]>
+	</update>
+    
+</sqlMap>

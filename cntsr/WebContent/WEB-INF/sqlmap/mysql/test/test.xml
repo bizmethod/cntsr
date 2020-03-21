@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="main">
+    
+     <select id="getHtmlUrl" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT SEQ_ALIO_URL, URL, URL_NM
+        FROM T_ALIO_URL
+        WHERE CHECK_YN = 'Y' AND RECODE_ST = 'A' AND URL IS NOT NULL
+    </select>
+    
+     <update id="updateUrlStatus" parameterClass="java.util.HashMap">
+         UPDATE T_ALIO_URL
+         SET 
+         CHECK_DT = SYSDATE
+         <isNotEmpty property="result_code">
+		<![CDATA[
+		, RESULT_CODE = #result_code#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty property="result">
+		<![CDATA[
+		, RESULT = #result#
+		]]>
+		</isNotEmpty>
+		
+         WHERE SEQ_ALIO_URL = #seq#
+     </update>
+    
+</sqlMap>

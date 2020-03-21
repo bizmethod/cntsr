@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="INTR_GRE_00">
+    
+    <!-- 상세 조회 -->
+    <resultMap class="java.util.HashMap" id="resultClob">
+        <result column="DESC_KR" property="DESC_KR" jdbcType="CLOB" javaType="java.lang.String"/>
+        <result column="DESC_EN" property="DESC_EN" jdbcType="CLOB" javaType="java.lang.String"/>
+        <result column="DESC_JP" property="DESC_JP" jdbcType="CLOB" javaType="java.lang.String"/>
+        <result column="DESC_CN" property="DESC_CN" jdbcType="CLOB" javaType="java.lang.String"/>
+        <result property="KOGL_CON_YN" column="KOGL_CON_YN" />
+        <result property="KOGL_OPEN_YN" column="KOGL_OPEN_YN" />
+        <result property="KOGL_B_YN" column="KOGL_B_YN" />
+        <result property="KOGL_M_YN" column="KOGL_M_YN" />
+    </resultMap>
+	<select id="getDetail" resultMap="resultClob" parameterClass="java.util.HashMap">
+	<![CDATA[
+   	SELECT 
+		(SELECT DESCRIPTION FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='KR') AS DESC_KR,
+		(SELECT KOGL_CON_YN FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='KR') AS KOGL_CON_YN,
+		(SELECT KOGL_OPEN_YN FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='KR') AS KOGL_OPEN_YN,
+		(SELECT KOGL_B_YN FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='KR') AS KOGL_B_YN,
+		(SELECT KOGL_M_YN FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='KR') AS KOGL_M_YN,
+		(SELECT DESCRIPTION FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='EN') AS DESC_EN,
+		(SELECT DESCRIPTION FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='JP') AS DESC_JP,
+		(SELECT DESCRIPTION FROM T_NOTICE WHERE NOTI_TYP='CG' AND LANG_TYP='CN') AS DESC_CN
+	FROM DUAL
+	]]>
+    </select>
+    
+	<!-- 한국어 인사말 수정 -->
+	<update id="UpdGreeting1" parameterClass="java.util.HashMap">
+		UPDATE T_NOTICE
+		SET 
+		KOGL_OPEN_YN = #kogl_open#,
+		KOGL_B_YN = #kogl_B#,
+		KOGL_M_YN = #kogl_M#,
+		KOGL_CON_YN = #kogl_con#,
+		DESCRIPTION = #description#,
+		UPD_ID = #reg_id#,
+		UPD_DT = sysdate
+		WHERE NOTI_TYP = 'CG' AND LANG_TYP = 'KR'
+	</update>
+	
+	<!-- 영어 인사말 수정 -->
+	<update id="UpdGreeting2" parameterClass="java.util.HashMap">
+		UPDATE T_NOTICE
+		SET 
+		DESCRIPTION = #description#,
+		UPD_ID = #reg_id#,
+		UPD_DT = sysdate
+		WHERE NOTI_TYP = 'CG' AND LANG_TYP = 'EN'
+	</update>
+	
+	<!-- 일본어 인사말 수정 -->
+	<update id="UpdGreeting3" parameterClass="java.util.HashMap">
+		UPDATE T_NOTICE
+		SET 
+		DESCRIPTION = #description#,
+		UPD_ID = #reg_id#,
+		UPD_DT = sysdate
+		WHERE NOTI_TYP = 'CG' AND LANG_TYP = 'JP'
+	</update>
+	
+	<!-- 중국어 인사말 수정 -->
+	<update id="UpdGreeting4" parameterClass="java.util.HashMap">
+		UPDATE T_NOTICE
+		SET 
+		DESCRIPTION = #description#,
+		UPD_ID = #reg_id#,
+		UPD_DT = sysdate
+		WHERE NOTI_TYP = 'CG' AND LANG_TYP = 'CN'
+	</update>
+
+</sqlMap>

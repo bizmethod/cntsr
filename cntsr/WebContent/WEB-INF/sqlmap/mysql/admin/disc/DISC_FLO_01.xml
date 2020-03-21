@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DISC_FLO_01">
+    
+    <select id="getDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT SEQ_CASH_FLOW
+		, TITLE_KR, TITLE_JP, TITLE_EN, TITLE_CN, TITLE_KR_BASE, TITLE_JP_BASE, TITLE_EN_BASE, TITLE_CN_BASE ,CASH_FLOW_OPR, CASH_CREATE_OPR, INT_RECEIPT, INT_PAY, INCOME_TAX_PAY, CASH_FLOW_INV
+		, CASH_INFLOW_INV, COL_LOANS, DEC_OTHER_FI_ASS, DEC_SECURITY_DEP, DEC_OTHER_CUR_FI_ASS, DEC_SALES_SCHE_ASS
+		, DIS_TANGIBLE_ASS, DIS_INTANGIBLE_ASS, CASH_OUTFLOW_INV, INC_LOANS, INC_OTHER_FI_ASS, INC_SECURITY_DEP
+		, INC_OTHER_NON_FI_ASS, ACQ_TANGIBLE_ASS, ACQ_INTANGIBLE_ASS, CASH_FLOW_FI_ACT, CASH_INFLOW_FI_ACT
+		, LONG_TERM_BOR, COL_SECURITY_DEP, COL_DEP, CASH_OUTFLOW_FI_ACT, CUR_LONG_TERM_BOR, REP_LONG_TERM_BOR 
+		, PAY_DIV, EXCHANGE_RATE, NET_INCREASE, BIGINNING_CASH, ENDING_CASH
+		FROM T_CASH_FLOW
+		WHERE RECODE_ST = 'A' AND SEQ_CASH_FLOW = #seq#
+	]]>
+    </select>
+    
+	<!-- 현금흐름표 등록 -->
+	<insert id="RegFlowData" parameterClass="java.util.HashMap">
+		 <selectKey keyProperty="seq" resultClass="java.lang.String">
+			SELECT SEQ_CASH_FLOW.NEXTVAL FROM DUAL
+		</selectKey>
+		<![CDATA[
+		INSERT INTO T_CASH_FLOW( SEQ_CASH_FLOW
+		, TITLE_KR, TITLE_JP, TITLE_EN, TITLE_CN, TITLE_KR_BASE, TITLE_JP_BASE, TITLE_EN_BASE, TITLE_CN_BASE ,CASH_FLOW_OPR, CASH_CREATE_OPR, INT_RECEIPT, INT_PAY, INCOME_TAX_PAY, CASH_FLOW_INV
+		, CASH_INFLOW_INV, COL_LOANS, DEC_OTHER_FI_ASS, DEC_SECURITY_DEP, DEC_OTHER_CUR_FI_ASS, DEC_SALES_SCHE_ASS
+		, DIS_TANGIBLE_ASS, DIS_INTANGIBLE_ASS, CASH_OUTFLOW_INV, INC_LOANS, INC_OTHER_FI_ASS, INC_SECURITY_DEP
+		, INC_OTHER_NON_FI_ASS, ACQ_TANGIBLE_ASS, ACQ_INTANGIBLE_ASS, CASH_FLOW_FI_ACT, CASH_INFLOW_FI_ACT
+		, LONG_TERM_BOR, COL_SECURITY_DEP, COL_DEP, CASH_OUTFLOW_FI_ACT, CUR_LONG_TERM_BOR, REP_LONG_TERM_BOR 
+		, PAY_DIV, EXCHANGE_RATE, NET_INCREASE, BIGINNING_CASH, ENDING_CASH
+		, REG_ID, REG_DT, RECODE_ST, DISP_YN
+		)
+		VALUES( #seq#
+		, #title_kr#, #title_jp#, #title_en#, #title_cn#, #title_kr_base#, #title_jp_base#, #title_en_base#, #title_cn_base# ,#cash_flow_opr#, #cash_create_opr#, #int_receipt#, #int_pay#, #income_tax_pay#, #cash_flow_inv#
+		, #cash_inflow_inv#, #col_loans#, #dec_other_fi_ass#, #dec_security_dep#, #dec_other_cur_fi_ass#, #dec_sales_sche_ass#
+		, #dis_tangible_ass#, #dis_intangible_ass#, #cash_outflow_inv#, #inc_loans#, #inc_other_fi_ass#, #inc_security_dep#
+		, #inc_other_non_fi_ass#, #acq_tangible_ass#, #acq_intangible_ass#, #cash_flow_fi_act#, #cash_inflow_fi_act#
+		, #long_term_bor#, #col_security_dep#, #col_dep#, #cash_outflow_fi_act#, #cur_long_term_bor#, #rep_long_term_bor# 
+		, #pay_div#, #exchange_rate#, #net_increase#, #biginning_cash#, #ending_cash#
+		, #user_id#, sysdate, 'A', 'N'
+		)
+		]]>
+	</insert>
+	
+	<!-- 현금흐름표 수정 -->
+    <update id="UpdFlowData" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_CASH_FLOW 
+		SET 
+		TITLE_KR = #title_kr#
+		,TITLE_JP = #title_jp#
+		,TITLE_EN = #title_en#
+		,TITLE_CN = #title_cn#
+		,TITLE_KR_BASE = #title_kr_base#
+		,TITLE_JP_BASE = #title_jp_base#
+		,TITLE_EN_BASE = #title_en_base#
+		,TITLE_CN_BASE = #title_cn_base#
+		, CASH_FLOW_OPR = #cash_flow_opr#
+		, CASH_CREATE_OPR = #cash_create_opr#
+		, INT_RECEIPT = #int_receipt#
+		, INT_PAY = #int_pay#
+		, INCOME_TAX_PAY = #income_tax_pay#
+		, CASH_FLOW_INV = #cash_flow_inv#
+		, CASH_INFLOW_INV = #cash_inflow_inv#
+		, COL_LOANS = #col_loans#
+		, DEC_OTHER_FI_ASS = #dec_other_fi_ass#
+		, DEC_SECURITY_DEP = #dec_security_dep#
+		, DEC_OTHER_CUR_FI_ASS = #dec_other_cur_fi_ass#
+		, DEC_SALES_SCHE_ASS = #dec_sales_sche_ass#
+		, DIS_TANGIBLE_ASS = #dis_tangible_ass#
+		, DIS_INTANGIBLE_ASS = #dis_intangible_ass#
+		, CASH_OUTFLOW_INV = #cash_outflow_inv#
+		, INC_LOANS = #inc_loans#
+		, INC_OTHER_FI_ASS = #inc_other_fi_ass#
+		, INC_SECURITY_DEP = #inc_security_dep#
+		, INC_OTHER_NON_FI_ASS = #inc_other_non_fi_ass#
+		, ACQ_TANGIBLE_ASS = #acq_tangible_ass#
+		, ACQ_INTANGIBLE_ASS = #acq_intangible_ass#
+		, CASH_FLOW_FI_ACT = #cash_flow_fi_act#
+		, CASH_INFLOW_FI_ACT = #cash_inflow_fi_act#
+		, LONG_TERM_BOR = #long_term_bor#
+		, COL_SECURITY_DEP = #col_security_dep#
+		, COL_DEP = #col_dep#
+		, CASH_OUTFLOW_FI_ACT = #cash_outflow_fi_act#
+		, CUR_LONG_TERM_BOR = #cur_long_term_bor#
+		, REP_LONG_TERM_BOR  = #rep_long_term_bor#
+		, PAY_DIV = #pay_div#
+		, EXCHANGE_RATE = #exchange_rate#
+		, NET_INCREASE = #net_increase#
+		, BIGINNING_CASH = #biginning_cash#
+		, ENDING_CASH = #ending_cash#
+		, UPD_ID = #user_id# 
+		, UPD_DT = SYSDATE
+		WHERE SEQ_CASH_FLOW = #seq#
+		]]>
+	</update>
+    
+</sqlMap>

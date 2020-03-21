@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="INTR_SPO_00">
+    
+    <!-- 상세 조회 -->
+    <select id="getMatchList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT SEQ_MATCH, TERM, DESCRIPTION, SORT_NO
+		FROM T_MATCH
+	    WHERE RECODE_ST ='A' 
+	    ORDER BY SORT_NO, REG_DT
+	</select>
+    
+	<!-- 대회현황 등록 -->
+	<insert id="RegMatch" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="sort_no" resultClass="String">
+	         SELECT NVL(MAX(SORT_NO),0)+1 FROM T_MATCH WHERE RECODE_ST='A'
+	    </selectKey>
+	    <![CDATA[
+	    INSERT INTO T_MATCH (SEQ_MATCH,TERM,DESCRIPTION,REG_ID,REG_DT,RECODE_ST,SORT_NO) 
+  		 VALUES(SEQ_MATCH.nextval, #term#,#description#,#user_id#,sysdate,'A',#sort_no#)
+	    ]]>
+    </insert>
+	
+	<!-- 대회현황 수정 -->
+	<update id="UpdMatch" parameterClass="java.util.HashMap">
+		UPDATE T_MATCH
+		SET TERM = #term#,
+		DESCRIPTION = #description#,
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_MATCH = #seq#
+	</update>
+
+	<!-- 대회현황 삭제 -->
+	<update id="DelMatch" parameterClass="java.util.HashMap">
+		UPDATE T_MATCH
+		SET RECODE_ST = 'D',
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_MATCH = #seq#
+	</update>
+	
+	<!-- 	정렬 입력 -->
+	<update id="SortUpdate" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_MATCH
+		SET SORT_NO = TO_NUMBER(#sort_no#)
+		where SEQ_MATCH = #seq#
+		]]>
+	</update>
+	
+</sqlMap>

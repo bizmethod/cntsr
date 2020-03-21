@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ETHI_GIC_00">
+    
+     <!-- 상품권구매현황리스트 -->
+    <select id="getOpcList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT SEQ_GIFT_CARD_BUY, BUY_REM, BUY_CNT, BUY_TOT_AMT, BUY_USE_DEP, BUY_DT, SORT_NO
+		FROM T_GIFT_CARD_BUY
+	    WHERE RECODE_ST ='A' 
+	    ORDER BY SORT_NO
+	</select>
+    
+    <!-- 상품권구매현황 등록 전처리 -->
+	<update id="PreRegInfo" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_GIFT_CARD_BUY
+		SET SORT_NO = SORT_NO + 1
+		]]>
+	</update>
+	
+	<!-- 상품권구매현황 등록 -->
+	<insert id="RegInfo" parameterClass="java.util.HashMap">
+	    <selectKey keyProperty="SORT_NO" resultClass="String">
+	         SELECT NVL(MAX(SORT_NO),0)+1 FROM T_GIFT_CARD_BUY
+	    </selectKey>
+	    <![CDATA[
+	     INSERT INTO T_GIFT_CARD_BUY (SEQ_GIFT_CARD_BUY, BUY_REM, BUY_CNT, BUY_TOT_AMT, BUY_USE_DEP, BUY_DT, REG_ID,REG_DT,RECODE_ST,SORT_NO) 
+  		 VALUES(SEQ_GIFT_CARD_BUY.nextval, #BUY_REM#,#BUY_CNT#,#BUY_TOT_AMT#,#BUY_USE_DEP#,#BUY_DT#,#reg_id#,sysdate,'A',1)
+	    ]]>
+    </insert>
+	
+	<!-- 상품권구매현황 수정  -->
+	<update id="UpdInfo" parameterClass="java.util.HashMap">
+		UPDATE T_GIFT_CARD_BUY
+		SET 
+		BUY_REM = #BUY_REM#,
+		BUY_CNT = #BUY_CNT#,
+		BUY_TOT_AMT = #BUY_TOT_AMT#,
+		BUY_USE_DEP = #BUY_USE_DEP#,
+		BUY_DT = #BUY_DT#,
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_GIFT_CARD_BUY = #seq#
+	</update>
+
+	<!-- 상품권구매현황 삭제 -->
+	<update id="DelInfo" parameterClass="java.util.HashMap">
+		UPDATE T_GIFT_CARD_BUY
+		SET RECODE_ST = 'I',
+		UPD_ID=#reg_id#,
+		UPD_DT=sysdate
+		WHERE SEQ_GIFT_CARD_BUY = #seq#
+	</update>
+	
+	<!-- 순서정렬 -->
+	<update id="SortUpdate" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_GIFT_CARD_BUY
+		SET SORT_NO = TO_NUMBER(#SORT_NO#)
+		where SEQ_GIFT_CARD_BUY = #seq#
+		]]>
+	</update>
+	
+</sqlMap>

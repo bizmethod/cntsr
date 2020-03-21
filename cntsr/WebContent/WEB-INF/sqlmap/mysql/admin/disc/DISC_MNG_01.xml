@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DISC_MNG_01">
+    <!-- 상세 -->
+	<select id="getUrlDetail" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	<![CDATA[
+	    SELECT URL_NM,URL,RECODE_ST,CHECK_YN,IN_URL_YN
+		FROM T_ALIO_URL
+		WHERE SEQ_ALIO_URL = #seq#
+	]]>
+    </select>
+    
+	<!-- 등록 -->
+	<insert id="RegAlioUrl" parameterClass="java.util.HashMap">
+		<selectKey keyProperty="sort_no" resultClass="String">
+	         SELECT NVL(MAX(SORT_NO),0)+1 FROM T_ALIO_URL WHERE PARENT_ID=#PID#
+	    </selectKey>
+		<![CDATA[
+		INSERT INTO T_ALIO_URL (SEQ_ALIO_URL, URL, URL_NM, REG_ID, REG_DT, RECODE_ST, DEPTH, PARENT_ID, SORT_NO, CHECK_YN,IN_URL_YN)
+		VALUES(SEQ_ALIO_URL.nextval, #url#, #url_nm#, #user_id#, SYSDATE, #sel_recode#, '2', #PID#, #sort_no#, #sel_sche#,#sel_blank_yn#)
+		]]>
+	</insert>
+	
+	<!-- 수정 -->
+    <update id="UpdAlioUrl" parameterClass="java.util.HashMap">
+		<![CDATA[
+		UPDATE T_ALIO_URL 
+		SET URL = #url#, 
+		URL_NM = #url_nm# , 
+		CHECK_YN = #sel_sche# , 
+		IN_URL_YN = #sel_blank_yn# , 
+		UPD_ID = #user_id# , 
+		UPD_DT = SYSDATE,
+		RECODE_ST = #sel_recode#
+		WHERE SEQ_ALIO_URL = #seq#
+		]]>
+	</update>
+    
+</sqlMap>

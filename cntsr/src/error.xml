@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<entry key="0"><![CDATA[성공]]></entry>
+	<entry key="0_msg"><![CDATA[성공하였습니다.]]></entry>
+	
+	<entry key="000"><![CDATA[로그인성공]]></entry>
+	<entry key="000_msg"><![CDATA[로그인 되었습니다.]]></entry>
+	<entry key="010"><![CDATA[사용자없음]]></entry>
+	<entry key="010_msg"><![CDATA[아이디 또는 패스워드를 다시 확인하세요.]]></entry>
+	<entry key="020"><![CDATA[패스워드에러]]></entry>
+	<entry key="020_msg"><![CDATA[아이디 또는 패스워드를 다시 확인하세요.]]></entry>
+	<entry key="090"><![CDATA[로그인처리에러]]></entry>
+	<entry key="090_msg"><![CDATA[로그인 처리가 실패하였습니다.]]></entry>
+	
+	<entry key="100"><![CDATA[UPDATE실패]]></entry>
+	<entry key="100_msg"><![CDATA[실패하였습니다.]]></entry>
+	<entry key="200"><![CDATA[INSERT실패]]></entry>
+	<entry key="200_msg"><![CDATA[INSERT실패]]></entry>
+	<entry key="300"><![CDATA[JSP명 없음]]></entry>
+	<entry key="300_msg"><![CDATA[파라미터에 JSP명[jspnm]이 없습니다.]]></entry>
+	<entry key="301"><![CDATA[리스트 타입 없음]]></entry>
+	<entry key="301_msg"><![CDATA[리스트 타입[noti_typ]이 없습니다.]]></entry>
+	<entry key="302"><![CDATA[SEQ 없음]]></entry>
+	<entry key="302_msg"><![CDATA[SEQ가 없습니다.]]></entry>
+	
+	<entry key="500"><![CDATA[sql에러]]></entry>
+	<entry key="500_msg"><![CDATA[SQL 에러가 발생하였습니다.]]></entry>
+	<entry key="501"><![CDATA[IllegalThreadState에러]]></entry>
+	<entry key="501_msg"><![CDATA[IllegalThreadState에러_msg]]></entry>
+	<entry key="502"><![CDATA[NullPoint에러]]></entry>
+	<entry key="502_msg"><![CDATA[NullPointer 에러가 있습니다.]]></entry>
+	<entry key="503"><![CDATA[NumberFormat에러]]></entry>
+	<entry key="503_msg"><![CDATA[NumberFormat에러_msg]]></entry>
+	
+	<entry key="601"><![CDATA[파일 확장자 맞지 않음]]></entry>
+	<entry key="601_msg"><![CDATA[파일 확장자 맞지 않음]]></entry>
+	<entry key="602"><![CDATA[파일 사이즈 맞지 않음]]></entry>
+	<entry key="602_msg"><![CDATA[파일 사이즈 맞지 않음]]></entry>
+	<entry key="604"><![CDATA[파일용량초과]]></entry>
+	<entry key="604_msg"><![CDATA[용량을 초과하였습니다.<br/>500M 이하로 다시 등록하세요]]></entry>
+	<entry key="605"><![CDATA[배너 데이타 등록실패]]></entry>
+	<entry key="605_msg"><![CDATA[배너 데이타 등록중 오류가 발생했습니다.]]></entry>
+	<entry key="606"><![CDATA[배너 파일 등록실패]]></entry>
+	<entry key="606_msg"><![CDATA[배너 파일 등록중 오류가 발생했습니다.]]></entry>
+	<entry key="614"><![CDATA[파일용량초과]]></entry>
+	<entry key="614_msg"><![CDATA[용량을 초과하였습니다.<br/>10M 이하로 다시 등록하세요]]></entry>
+	
+	<entry key="901"><![CDATA[HTTP 200 결과가 아님]]></entry>
+	<entry key="901_msg"><![CDATA[HTTP 헤더 결과가 200[성공]이 아닙니다.]]></entry>
+	<entry key="902"><![CDATA[해당 URL 단어검색 실패]]></entry>
+	<entry key="902_msg"><![CDATA[해당 URL에 관련된 단어[그랜드코리아레저(주)]가 없습니다.]]></entry>
+	
+	<entry key="1000"><![CDATA[알수없는 에러]]></entry>
+	<entry key="1000_msg"><![CDATA[등록되지 않은 에러가 발생하였습니다.]]></entry>
+</properties>
